@@ -158,6 +158,7 @@ void command_parser::_internal_parse_command(const std::string_view _command)
 	std::string_view command = std::trim(_command, " \n\r\t\v");
 	size_t pos = command.find_first_of(" \n\r\t\v");
 	std::string_view prog = command.substr(0, pos);
+	std::string_view args_str = std::trim(command.substr(pos), " \n\r\t\v");
 
 	/*
 	std::vector<std::string> args;
@@ -195,7 +196,7 @@ void command_parser::_internal_parse_command(const std::string_view _command)
 			}
 			it->second->function_args(_args);
 		} else if (it->second->function_args) {
-			it->second->function_line(command);
+			it->second->function_line(args_str);
 		}
 	} else {
 		auto _args =

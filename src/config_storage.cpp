@@ -15,9 +15,13 @@
 #include "../include/drwalin_util/command_parser.hpp"
 #include "../include/drwalin_util/config_storage.hpp"
 
-config_storage::config_storage() {}
+namespace dutl
+{
+namespace config
+{
+storage::storage() {}
 
-config_storage::~config_storage()
+storage::~storage()
 {
 	std::string config_save_file_name;
 	if (get_string("config.store_config.file_path", &config_save_file_name)) {
@@ -45,38 +49,37 @@ static bool get_or_default(const std::unordered_map<std::string, T> &map,
 	return true;
 }
 
-bool config_storage::get_bool(const std::string_view key, bool *ret)
+bool storage::get_bool(const std::string_view key, bool *ret)
 {
 	std::shared_lock lock(ms);
 	return get_or_default<bool>(bools, key, ret);
 }
 
-bool config_storage::get_string(const std::string_view key, std::string *ret)
+bool storage::get_string(const std::string_view key, std::string *ret)
 {
 	std::shared_lock lock(ms);
 	return get_or_default<std::string>(strings, key, ret);
 }
 
-bool config_storage::get_integer(const std::string_view key, int64_t *ret)
+bool storage::get_integer(const std::string_view key, int64_t *ret)
 {
 	std::shared_lock lock(mi);
 	return get_or_default<int64_t>(ints, key, ret);
 }
 
-bool config_storage::get_float(const std::string_view key, double *ret)
+bool storage::get_float(const std::string_view key, double *ret)
 {
 	std::shared_lock lock(mf);
 	return get_or_default<double>(floats, key, ret);
 }
 
-bool config_storage::get_vec(const std::string_view key,
-							 std::vector<float> *ret)
+bool storage::get_vec(const std::string_view key, std::vector<float> *ret)
 {
 	std::shared_lock lock(mv);
 	return get_or_default<std::vector<float>>(vec, key, ret);
 }
 
-bool config_storage::get_vec(const std::string_view key, float *ret, int n)
+bool storage::get_vec(const std::string_view key, float *ret, int n)
 {
 	std::shared_lock lock(mv);
 	auto it = vec.find(std::to_string(key));
@@ -93,46 +96,44 @@ bool config_storage::get_vec(const std::string_view key, float *ret, int n)
 	return true;
 }
 
-void config_storage::set_bool(const std::string_view key, bool value)
+void storage::set_bool(const std::string_view key, bool value)
 {
 	std::lock_guard<std::shared_mutex> lock(mb);
 	bools[std::to_string(key)] = value;
 }
 
-void config_storage::set_string(const std::string_view key,
-								const std::string &value)
+void storage::set_string(const std::string_view key, const std::string &value)
 {
 	std::lock_guard<std::shared_mutex> lock(ms);
 	strings[std::to_string(key)] = value;
 }
 
-void config_storage::set_string(const std::string_view key,
-								const std::string_view value)
+void storage::set_string(const std::string_view key,
+						 const std::string_view value)
 {
 	std::lock_guard<std::shared_mutex> lock(ms);
 	strings[std::to_string(key)] = value;
 }
 
-void config_storage::set_integer(const std::string_view key, int64_t value)
+void storage::set_integer(const std::string_view key, int64_t value)
 {
 	std::lock_guard<std::shared_mutex> lock(mi);
 	ints[std::to_string(key)] = value;
 }
 
-void config_storage::set_float(const std::string_view key, double value)
+void storage::set_float(const std::string_view key, double value)
 {
 	std::lock_guard<std::shared_mutex> lock(mf);
 	floats[std::to_string(key)] = value;
 }
 
-bool config_storage::set_vec(const std::string_view key,
-							 const std::vector<float> &value)
+bool storage::set_vec(const std::string_view key,
+					  const std::vector<float> &value)
 {
 	return set_vec(key, value.data(), value.size());
 }
 
-bool config_storage::set_vec(const std::string_view key, const float *value,
-							 int n)
+bool storage::set_vec(const std::string_view key, const float *value, int n)
 {
 	std::lock_guard<std::shared_mutex> lock(mv);
 	std::vector<float> &v = vec[std::to_string(key)];
@@ -146,8 +147,7 @@ bool config_storage::set_vec(const std::string_view key, const float *value,
 	return false;
 }
 
-bool config_storage::get_or_set_bool(const std::string_view key,
-									 bool default_value)
+bool storage::get_or_set_bool(const std::string_view key, bool default_value)
 {
 	bool ret;
 	if (get_bool(key, &ret)) {
@@ -158,8 +158,8 @@ bool config_storage::get_or_set_bool(const std::string_view key,
 	}
 }
 
-std::string config_storage::get_or_set_string(const std::string_view key,
-											  std::string_view default_value)
+std::string storage::get_or_set_string(const std::string_view key,
+									   std::string_view default_value)
 {
 	std::string ret;
 	if (get_string(key, &ret)) {
@@ -170,8 +170,8 @@ std::string config_storage::get_or_set_string(const std::string_view key,
 	}
 }
 
-int64_t config_storage::get_or_set_integer(const std::string_view key,
-										   int64_t default_value)
+int64_t storage::get_or_set_integer(const std::string_view key,
+									int64_t default_value)
 {
 	int64_t ret;
 	if (get_integer(key, &ret)) {
@@ -182,8 +182,8 @@ int64_t config_storage::get_or_set_integer(const std::string_view key,
 	}
 }
 
-double config_storage::get_or_set_float(const std::string_view key,
-										double default_value)
+double storage::get_or_set_float(const std::string_view key,
+								 double default_value)
 {
 	double ret;
 	if (get_float(key, &ret)) {
@@ -195,8 +195,8 @@ double config_storage::get_or_set_float(const std::string_view key,
 }
 
 std::vector<float>
-config_storage::get_or_set_vec(const std::string_view key,
-							   const std::vector<float> &default_value)
+storage::get_or_set_vec(const std::string_view key,
+						const std::vector<float> &default_value)
 {
 	std::vector<float> ret;
 	if (get_vec(key, &ret)) {
@@ -207,9 +207,8 @@ config_storage::get_or_set_vec(const std::string_view key,
 	}
 }
 
-void config_storage::get_or_set_vec(const std::string_view key,
-									const float *default_value, float *ret,
-									int n)
+void storage::get_or_set_vec(const std::string_view key,
+							 const float *default_value, float *ret, int n)
 {
 	if (get_vec(key, ret, n)) {
 		return;
@@ -219,7 +218,7 @@ void config_storage::get_or_set_vec(const std::string_view key,
 	}
 }
 
-std::string config_storage::all_configs_command()
+std::string storage::all_configs_command()
 {
 	std::ostringstream ss;
 
@@ -271,7 +270,7 @@ std::string config_storage::all_configs_command()
 	return ss.str();
 }
 
-void config_storage::initialise_commands(command_parser *com)
+void storage::initialise_commands(command_parser *com)
 {
 	com->register_custom_command(
 		{"bool"},
@@ -279,12 +278,14 @@ void config_storage::initialise_commands(command_parser *com)
 		"arguments:\n"
 		"  - variable name\n"
 		"  - new boolean value",
-		[this](const std::vector<std::string_view> &args) {
-			if (args.size() < 3) {
-				LOG_ERROR("Not enaught arguments to set boolean");
+		[this](std::string_view args) {
+			std::string_view key;
+			int value;
+			if (!(std::read(args, key) || std::read(args, value))) {
+				LOG_ERROR("Not enough or invalid arguments to set boolean");
 				return;
 			}
-			set_bool(args[1], atoi(std::string(args[2]).c_str()));
+			set_bool(key, value);
 		});
 
 	com->register_custom_command(
@@ -318,85 +319,61 @@ void config_storage::initialise_commands(command_parser *com)
 		"arguments:\n"
 		"  - variable name\n"
 		"  - new integer value",
-		[this](const std::vector<std::string_view> &args) {
-			if (args.size() < 3) {
-				LOG_ERROR("Not enaught arguments to set integer");
+		[this](std::string_view args) {
+			std::string_view key;
+			int value;
+			if (!(std::read(args, key) || std::read(args, value))) {
+				LOG_ERROR("Not enough or invalid arguments to set integer");
 				return;
 			}
-			set_integer(args[1], std::stoull(std::string(args[2]).c_str()));
+			set_integer(key, value);
 		});
 
-	com->register_custom_command({"float"},
-								 "Sets named config variable with float value\n"
-								 "arguments:\n"
-								 "  - variable name\n"
-								 "  - new float value",
-								 [this](const std::vector<std::string_view> &args) {
-									 if (args.size() < 3) {
-										 LOG_ERROR(
-											 "Not enaught arguments to setf");
-										 return;
-									 }
-			if (args.size() < 3) {
-				LOG_ERROR("Not enaught arguments to set float");
+	com->register_custom_command(
+		{"float"},
+		"Sets named config variable with float value\n"
+		"arguments:\n"
+		"  - variable name\n"
+		"  - new float value",
+		[this](std::string_view args) {
+			std::string_view key;
+			float value;
+			if (!(std::read(args, key) || std::read(args, value))) {
+				LOG_ERROR("Not enough or invalid arguments to set integer");
 				return;
 			}
-			set_float(args[1], std::stod(std::string(args[2]).c_str()));
-								 });
+			set_float(key, value);
+		});
 
 	com->register_custom_command(
 		{"vec"},
-		"Sets named config variable with vec2 value\n"
+		"Sets named config variable with multiple float values (vector)\n"
 		"arguments:\n"
 		"  - variable name\n"
-		"  - value\n"
-		"  ... - more values",
-		[this](const std::vector<std::string_view> &args) {
-			if (args.size() < 4) {
-				LOG_ERROR("Not enaught arguments to setv2");
+		"  - real value\n"
+		"  ... - more real values",
+		[this](std::string_view args) {
+			std::string_view key;
+			if (!std::read(args, key)) {
+				LOG_ERROR("Not enough arguments to set vector");
 				return;
 			}
-			set_vec2(args[1], {std::stof(args[2]), std::stof(args[3])});
-		});
-
-	com->register_custom_command(
-		{"setv3"},
-		"Sets named config variable with vec3 value\n"
-		"arguments:\n"
-		"  - variable name\n"
-		"  - new X value\n"
-		"  - new Y value\n"
-		"  - new Z value",
-		[this](const std::vector<std::string> &args) {
-			if (args.size() < 4) {
-				LOG_ERROR("Not enaught arguments to setv3");
-				return;
+			std::vector<float> vec;
+			args = std::trim(args, " \n\t\r\v");
+			while (args.size() != 0) {
+				float v;
+				if (!std::read(args, key)) {
+					LOG_ERROR("Failed to parse float for set vector");
+					return;
+				}
+				vec.push_back(v);
 			}
-			set_vec3(args[1], {std::stof(args[2]), std::stof(args[3]),
-							   std::stof(args[4])});
-		});
-
-	com->register_custom_command(
-		{"setv4"},
-		"Sets named config variable with vec4 value\n"
-		"arguments:\n"
-		"  - variable name\n"
-		"  - new W value\n"
-		"  - new X value\n"
-		"  - new Y value\n"
-		"  - new Z value",
-		[this](const std::vector<std::string> &args) {
-			if (args.size() < 4) {
-				LOG_ERROR("Not enaught arguments to setv4");
-				return;
-			}
-			set_vec4(args[1], {std::stof(args[2]), std::stof(args[3]),
-							   std::stof(args[4]), std::stof(args[5])});
+			set_vec(key, vec);
 		});
 
 	com->register_custom_command(
 		{"print_all_variables", "print_all"}, "Prints all variables",
-		[this](const std::vector<std::string> &args) {
+		[this](std::string_view args) {
 			std::string str = all_configs_command();
 			std::string ret = std::replace_all(str, "\n", "\n  ");
 			printf("All stored variables:\n  %s\n", ret.c_str());
@@ -407,19 +384,21 @@ void config_storage::initialise_commands(command_parser *com)
 		"Saves all variables to a file\n"
 		"arguments:\n"
 		"  - file name to save variables",
-		[this](const std::vector<std::string> &args) {
+		[this](const std::vector<std::string_view> &args) {
 			if (args.size() < 2) {
 				LOG_ERROR("Not enaught arguments to save_variables_to_file");
 				return;
 			}
-			FILE *file = fopen(args[1].c_str(), "wb");
+			FILE *file = fopen(std::string(args[1]).c_str(), "wb");
 			if (file) {
 				std::string str = all_configs_command();
 				fprintf(file, "%s\n", str.c_str());
 				fclose(file);
 			} else {
 				LOG_ERROR("Failed to open file `%s` for writing",
-						  args[1].c_str());
+						  std::string(args[1]).c_str());
 			}
 		});
 }
+} // namespace config
+} // namespace dutl

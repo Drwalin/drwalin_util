@@ -6,6 +6,7 @@
 #include <string_view>
 #include <vector>
 #include <string>
+#include <charconv>
 
 #include "../include/drwalin_util/string_util.hpp"
 
@@ -100,5 +101,142 @@ std::string replace_all(const std::string &str, const std::string &src,
 std::string to_string(std::string_view sv)
 {
 	return std::string(sv.data(), sv.size());
+}
+
+template<typename T>
+inline bool read_typed(string_view &str, T &value)
+{
+	size_t pos = str.find_first_not_of(" \n\r\t\v");
+	if (pos == std::string_view::npos) {
+		str = {str.data() + str.size(), 0};
+		return false;
+	} else {
+		str = str.substr(pos, str.size() - pos);
+	}
+    const std::from_chars_result result = std::from_chars(str.data(), str.data() + str.size(), value);
+    if(result.ec == std::errc::invalid_argument || result.ec == std::errc::result_out_of_range) {
+		str = {str.data() + str.size(), 0};
+		return false;
+	}
+	if (result.ptr < str.data() || result.ptr > str.data()+str.size()) {
+		str = {str.data() + str.size(), 0};
+		return false;
+	}
+	str = {result.ptr, size_t(str.data()+str.size() - result.ptr)};
+	return true;
+}
+
+bool read(string_view &str, int32_t &value)
+{
+	return read_typed(str, value);
+}
+
+bool read(string_view &str, int64_t &value)
+{
+	return read_typed(str, value);
+}
+
+bool read(string_view &str, uint32_t &value)
+{
+	return read_typed(str, value);
+}
+
+bool read(string_view &str, uint64_t &value)
+{
+	return read_typed(str, value);
+}
+
+bool read(string_view &str, float &value)
+{
+	return read_typed(str, value);
+}
+
+bool read(string_view &str, double &value)
+{
+	return read_typed(str, value);
+}
+
+bool read(string_view &str, std::string_view &value)
+{
+	size_t pos = str.find_first_not_of(" \n\r\t\v");
+	if (pos == std::string_view::npos) {
+		str = {str.data() + str.size(), 0};
+		return false;
+	} else {
+		str = str.substr(pos, str.size() - pos);
+	}
+
+	size_t end = str.find_first_of(" \n\r\t\v");
+	if (end == std::string_view::npos) {
+		value = str;
+		str = {str.data() + str.size(), 0};
+	} else {
+		value = str.substr(0, end);
+		str = str.substr(end);
+	}
+	return true;
+}
+
+int32_t read_default_int32(string_view &str, int32_t default_value)
+{
+	decltype(default_value) out;
+	if (read(str, out)) {
+		return out;
+	}
+	return default_value;
+}
+
+int64_t read_default_int64(string_view &str, int64_t default_value)
+{
+	decltype(default_value) out;
+	if (read(str, out)) {
+		return out;
+	}
+	return default_value;
+}
+
+uint32_t read_default_uint32(string_view &str, uint32_t default_value)
+{
+	decltype(default_value) out;
+	if (read(str, out)) {
+		return out;
+	}
+	return default_value;
+}
+
+uint64_t read_default_uint64(string_view &str, uint64_t default_value)
+{
+	decltype(default_value) out;
+	if (read(str, out)) {
+		return out;
+	}
+	return default_value;
+}
+
+float read_default_float(string_view &str, float default_value)
+{
+	decltype(default_value) out;
+	if (read(str, out)) {
+		return out;
+	}
+	return default_value;
+}
+
+double read_default_double(string_view &str, double default_value)
+{
+	decltype(default_value) out;
+	if (read(str, out)) {
+		return out;
+	}
+	return default_value;
+}
+
+string_view read_default_string(string_view &str, string_view default_value)
+{
+	decltype(default_value) out;
+	if (read(str, out)) {
+		return out;
+	}
+	return default_value;
 }
 } // namespace std

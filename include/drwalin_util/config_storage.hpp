@@ -11,11 +11,58 @@
 #include <shared_mutex>
 #include <vector>
 
-class config_storage
+namespace dutl
+{
+namespace config
+{
+enum entry_enum {
+	EMPTY = 0,
+	STRING = 2,
+	SHORT_STRING = STRING | 1,
+	VECTOR = 4,
+	SHORT_VECTOR = VECTOR | 1,
+	REAL = 8,
+	INTEGER = 16,
+	BOOLEAN = 32,
+};
+
+struct entry {
+	struct short_string_t {
+		uint8_t size = 0;
+		char str[27] = {0};
+	};
+	struct string_t {
+		uint32_t size = 0;
+		uint32_t capacity = 0;
+		char *str = nullptr;
+	};
+
+	struct short_vector_t {
+		uint8_t size = 0;
+		float vecs[7];
+	};
+	struct vector_t {
+		uint32_t size = 0;
+		float *vec = nullptr;
+	};
+
+	union {
+		short_string_t short_string;
+		string_t string;
+		short_vector_t short_vector;
+		vector_t vector;
+		double real;
+		int64_t integer;
+		bool boolean;
+	};
+	entry_enum type = EMPTY;
+};
+
+class storage
 {
 public:
-	config_storage();
-	~config_storage();
+	storage();
+	~storage();
 
 	void initialise_commands(class command_parser *commands_parser);
 
@@ -56,4 +103,6 @@ public:
 
 	std::shared_mutex mb, ms, mi, mf, mv;
 };
+} // namespace config
+} // namespace dutl
 #endif
