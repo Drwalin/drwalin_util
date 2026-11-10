@@ -3,8 +3,6 @@
 // This file is part of DrwalinUtil project under MIT License
 // You should have received a copy of the MIT License along with this program.
 
-#define DRWUTIL_USE_RPMALLOC 1
-
 #include "../include/drwutil/stats.hpp"
 
 namespace dutl
@@ -36,4 +34,4 @@ void memory_stats::collect_single_deallocation(size_t bytes)
 	deallocations += 1;
 #endif
 }
-}
+} // namespace dutl

@@ -24,7 +24,7 @@ namespace dutl
 {
 namespace log
 {
-std::string pretty_function(const char *ugly_function);
+const std::string &pretty_function(const char *ugly_function);
 std::string pretty_file_path(std::string path, bool ignore_path);
 } // namespace log
 } // namespace dutl

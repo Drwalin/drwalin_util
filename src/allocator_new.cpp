@@ -9,15 +9,9 @@
 
 #include "../include/drwutil/allocator.hpp"
 
-extern void operator delete(void *p) noexcept
-{
-	dutl::alloc::release(p, 0);
-}
+extern void operator delete(void *p) noexcept { dutl::alloc::release(p, 0); }
 
-extern void operator delete[](void *p) noexcept
-{
-	dutl::alloc::release(p, 0);
-}
+extern void operator delete[](void *p) noexcept { dutl::alloc::release(p, 0); }
 
 extern void *operator new(std::size_t size) noexcept(false)
 {

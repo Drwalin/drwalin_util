@@ -12,8 +12,10 @@ namespace dutl
 {
 namespace log
 {
-std::string pretty_function(std::string function)
+const std::string &pretty_function(const char *ugly_function)
 {
+	std::string function = ugly_function;
+
 	static std::shared_mutex mutex;
 	static std::unordered_map<std::string, std::string> names;
 	{
@@ -109,15 +111,15 @@ std::string pretty_function(std::string function)
 		funcName.erase(p, 4);
 	}
 
-	{
-		std::lock_guard lock(mutex);
-		names[function] = funcName;
-	}
-
-	return funcName;
+	std::lock_guard lock(mutex);
+	std::string &ret = names[function];
+	ret = funcName;
+	names[function] = funcName;
+	return ret;
 }
 
-constexpr std::string IGNORE_COMMON_PATH = DRWUTIL_LOG_IGNORE_COMMON_PATH;
+inline const static std::string IGNORE_COMMON_PATH =
+	DRWUTIL_LOG_IGNORE_COMMON_PATH;
 
 std::string pretty_file_path(std::string path, bool ignore_path)
 {

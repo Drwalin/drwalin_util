@@ -6,7 +6,7 @@
 #ifndef DRWUTIL_LOG_HPP
 #define DRWUTIL_LOG_HPP
 
-#include "time.hpp"
+#include "logger.hpp"
 
 #ifdef DRWUTIL_LOG_USE_PRETTY_FUNCTION
 #define __FUNCTION_NAME__ __PRETTY_FUNCTION__
@@ -99,38 +99,10 @@ namespace dutl
 {
 namespace log
 {
-enum log_level : unsigned int {
-	FATAL = 1,
-	LL_ERROR = 2,
-	WARN = 3,
-	INFO = 4,
-	DEBUG = 5,
-	TRACE = 6,
-
-	LL_IGNORE = 127
-};
-
-struct internal_logger;
-struct logger {
-	logger(const char *file = nullptr, bool to_stderr = true,
-		   bool to_stdout = false, int64_t max_bytes = 32 * 1024 * 1024,
-		   time::duration max_duration = time::hours(25),
-		   bool reset_at_midnight = true);
-	~logger();
-
-	void init(const char *file = nullptr, bool to_stderr = true,
-			  bool to_stdout = false, int64_t max_bytes = 32 * 1024 * 1024,
-			  time::duration max_duration = time::hours(25),
-			  bool reset_at_midnight = true);
-	void deinit();
-
-	void log(log_level level, bool print_time, bool print_file,
-			 const char *file, int line, const char *function, const char *fmt,
-			 ...);
-
-private:
-	internal_logger *il = nullptr;
-};
+// returns number of written bytes
+int32_t log_snprintf(char *buffer, int32_t buffer_size, log_level level,
+					 bool print_time, bool print_file, const char *file,
+					 int line, const char *function, const char *fmt, ...);
 
 void global_disable_printin_time(bool disable_time);
 

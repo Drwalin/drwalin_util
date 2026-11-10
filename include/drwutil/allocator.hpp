@@ -21,28 +21,26 @@ template <typename T> struct allocated_object {
 
 namespace alloc
 {
-	__attribute__((noinline)) allocated_object<void>
-	allocate(size_t bytes);
-	__attribute__((noinline)) void release(void *ptr, size_t bytes);
+__attribute__((noinline)) allocated_object<void> allocate(size_t bytes);
+__attribute__((noinline)) void release(void *ptr, size_t bytes);
 
-	template <typename T, typename... Args>
-	T *allocate_typed(Args &&...args)
-	{
-		allocated_object<void> v = allocate(sizeof(T));
-		allocated_object<T> ret;
-		ret.capacity = v.capacity;
-		ret.object = new (v.object) T(std::move(args)...);
-		return ret.object;
-	}
-
-	template <typename T> void release_typed(T *ptr, size_t bytes)
-	{
-		ptr->~T();
-		release(ptr, bytes);
-	}
-
-	memory_stats &stats();
+template <typename T, typename... Args> T *allocate_typed(Args &&...args)
+{
+	allocated_object<void> v = allocate(sizeof(T));
+	allocated_object<T> ret;
+	ret.capacity = v.capacity;
+	ret.object = new (v.object) T(std::move(args)...);
+	return ret.object;
 }
+
+template <typename T> void release_typed(T *ptr, size_t bytes)
+{
+	ptr->~T();
+	release(ptr, bytes);
+}
+
+memory_stats &stats();
+} // namespace alloc
 } // namespace dutl
 
 #endif

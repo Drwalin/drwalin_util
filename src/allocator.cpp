@@ -5,8 +5,6 @@
 
 #include <cassert>
 
-#define DRWUTIL_USE_RPMALLOC 1
-
 #if DRWUTIL_USE_RPMALLOC
 #include "../include/drwutil/log.hpp"
 #include "../rpmalloc/rpmalloc/rpmalloc.h"
@@ -46,7 +44,7 @@ allocated_object<void> allocate(size_t bytes)
 #else
 	void *ptr = malloc(bytes);
 
-	_stats.collect_single_allocation(_bytes);
+	_stats.collect_single_allocation(bytes);
 
 	assert((((uint64_t)ptr) & 0xF) == 0);
 
@@ -67,9 +65,6 @@ void release(void *ptr, size_t bytes)
 	_stats.collect_single_deallocation(bytes);
 }
 
-memory_stats &stats()
-{
-	return _stats;
-}
+memory_stats &stats() { return _stats; }
 } // namespace alloc
 } // namespace dutl
