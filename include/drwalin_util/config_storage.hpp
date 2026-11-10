@@ -13,6 +13,8 @@
 
 namespace dutl
 {
+class command_parser;
+
 namespace config
 {
 enum entry_enum {
@@ -64,7 +66,7 @@ public:
 	storage();
 	~storage();
 
-	void initialise_commands(class command_parser *commands_parser);
+	void initialise_commands(command_parser *commands_parser);
 
 	bool get_bool(const std::string_view key, bool *ret);
 	bool get_string(const std::string_view key, std::string *ret);

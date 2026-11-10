@@ -34,7 +34,9 @@ struct istream_buf {
 
 namespace dutl
 {
-command_parser::command_parser() {}
+command_parser::command_parser() {
+	initialize_commands();
+}
 
 command_parser::~command_parser() {}
 
@@ -158,34 +160,18 @@ void command_parser::register_custom_command(
 void command_parser::_internal_parse_command(const std::string_view _command)
 {
 	std::string_view command = std::trim(_command, " \n\r\t\v");
+	if (command.starts_with("#")) {
+		return;
+	}
 	size_t pos = command.find_first_of(" \n\r\t\v");
 	std::string_view prog = command.substr(0, pos);
-	std::string_view args_str = std::trim(command.substr(pos), " \n\r\t\v");
-
-	/*
-	std::vector<std::string> args;
-	args.resize(_args.size());
-	for (int i = 0; i < args.size(); ++i) {
-		args[i] = std::to_string(_args[i]);
-		if (i > 0) {
-			// todo: substitute variablies like in bash: ${varname}
-// 			std::string v = std::to_string(_args[i]);
-// 			int64_t ni = 0;
-// 			double nf = 0;
-// 			if (server_core->config_storage.get_string(v, &(args[i]))) {
-// 				continue;
-// 			} else if (server_core->config_storage.get_integer(v, &ni)) {
-// 				args[i] = std::to_string(ni);
-// 			} else if (server_core->config_storage.get_float(v, &nf)) {
-// 				args[i] = std::to_string(nf);
-// 			} else {
-// 				args[i]
-// 			}
-		}
+	std::string_view args_str = command;
+	if (pos != std::string_view::npos) {
+		args_str = std::trim(command.substr(pos), " \n\r\t\v");
 	}
-	*/
 
 	std::string cmd = std::to_string(prog);
+
 	std::transform(cmd.begin(), cmd.end(), cmd.begin(),
 				   [](auto c) { return std::tolower(c); });
 	auto it = commands.find(cmd);
@@ -197,22 +183,11 @@ void command_parser::_internal_parse_command(const std::string_view _command)
 				return;
 			}
 			it->second->function_args(_args);
-		} else if (it->second->function_args) {
+		} else if (it->second->function_line) {
 			it->second->function_line(args_str);
+		} else {
+			LOG_FATAL("No function set in callback");
 		}
-	} else {
-		auto _args =
-			std::convert_to_args_list({command.data(), command.size()});
-		if (_args.size() == 0) {
-			return;
-		}
-		std::string s;
-		for (std::string_view sv : _args) {
-			s += "`";
-			s += std::to_string(sv);
-			s += "`";
-		}
-		LOG_ERROR("command not found: %s", s.c_str());
 	}
 }
 } // namespace dutl

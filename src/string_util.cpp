@@ -100,7 +100,7 @@ std::string replace_all(const std::string &str, const std::string &src,
 
 std::string to_string(std::string_view sv)
 {
-	return std::string(sv.data(), sv.size());
+	return std::string(sv.data(), sv.data()+sv.size());
 }
 
 template<typename T>
@@ -111,7 +111,7 @@ inline bool read_typed(string_view &str, T &value)
 		str = {str.data() + str.size(), 0};
 		return false;
 	} else {
-		str = str.substr(pos, str.size() - pos);
+		str = str.substr(pos);
 	}
     const std::from_chars_result result = std::from_chars(str.data(), str.data() + str.size(), value);
     if(result.ec == std::errc::invalid_argument || result.ec == std::errc::result_out_of_range) {
@@ -163,7 +163,7 @@ bool read(string_view &str, std::string_view &value)
 		str = {str.data() + str.size(), 0};
 		return false;
 	} else {
-		str = str.substr(pos, str.size() - pos);
+		str = str.substr(pos);
 	}
 
 	size_t end = str.find_first_of(" \n\r\t\v");

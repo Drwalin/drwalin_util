@@ -241,7 +241,7 @@ std::string storage::all_configs_command()
 	for (const auto &it : strings) {
 		if (ss.tellp() > 0)
 			ss << "\n";
-		ss << "string " << it.first << " \"" << it.second << "\"";
+		ss << "string " << it.first << " " << it.second << "";
 	}
 	ms.unlock();
 
@@ -286,9 +286,10 @@ void storage::initialise_commands(command_parser *com)
 		"  - variable name\n"
 		"  - new boolean value",
 		[this](std::string_view args) {
+			std::string s(args);
 			std::string_view key;
-			int value;
-			if (!(std::read(args, key) || std::read(args, value))) {
+			int32_t value;
+			if ((std::read(args, key) && std::read(args, value)) == false) {
 				LOG_ERROR("Not enough or invalid arguments to set boolean");
 				return;
 			}
@@ -303,18 +304,18 @@ void storage::initialise_commands(command_parser *com)
 		"  - new string value",
 		[this](const std::string_view args) {
 			std::string_view key, value;
-			size_t p1 = args.find_first_of(" \n\r\t\v");
-			size_t key_beg = args.find_first_not_of(" \n\r\t\v", p1);
+			size_t key_beg = args.find_first_not_of(" \n\r\t\v");
 			size_t key_end = args.find_first_of(" \n\r\t\v", key_beg);
 			size_t value_beg = args.find_first_not_of(" \n\r\t\v", key_end);
 			if (value_beg == std::string_view::npos) {
 				if (key_end == std::string_view::npos) {
-					LOG_ERROR("Not enaught arguments to sets");
+					LOG_ERROR("Not enough arguments to set string");
 					return;
 				}
 			} else {
 				value = args.substr(value_beg);
 			}
+
 			key = args.substr(key_beg, key_end - key_beg);
 
 			set_string(key, value);
@@ -329,7 +330,7 @@ void storage::initialise_commands(command_parser *com)
 		[this](std::string_view args) {
 			std::string_view key;
 			int value;
-			if (!(std::read(args, key) || std::read(args, value))) {
+			if ((std::read(args, key) && std::read(args, value)) == false) {
 				LOG_ERROR("Not enough or invalid arguments to set integer");
 				return;
 			}
@@ -345,8 +346,8 @@ void storage::initialise_commands(command_parser *com)
 		[this](std::string_view args) {
 			std::string_view key;
 			float value;
-			if (!(std::read(args, key) || std::read(args, value))) {
-				LOG_ERROR("Not enough or invalid arguments to set integer");
+			if ((std::read(args, key) && std::read(args, value)) == false) {
+				LOG_ERROR("Not enough or invalid arguments to set float");
 				return;
 			}
 			set_float(key, value);
@@ -369,7 +370,7 @@ void storage::initialise_commands(command_parser *com)
 			args = std::trim(args, " \n\t\r\v");
 			while (args.size() != 0) {
 				float v;
-				if (!std::read(args, key)) {
+				if (!std::read(args, v)) {
 					LOG_ERROR("Failed to parse float for set vector");
 					return;
 				}
@@ -393,7 +394,7 @@ void storage::initialise_commands(command_parser *com)
 		"  - file name to save variables",
 		[this](const std::vector<std::string_view> &args) {
 			if (args.size() < 2) {
-				LOG_ERROR("Not enaught arguments to save_variables_to_file");
+				LOG_ERROR("Not enough arguments to save_variables_to_file");
 				return;
 			}
 			FILE *file = fopen(std::string(args[1]).c_str(), "wb");

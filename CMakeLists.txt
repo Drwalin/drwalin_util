@@ -60,3 +60,8 @@ add_executable(test_config
 	tests/test_config.cpp
 )
 target_link_libraries(test_config PRIVATE drwalin_util)
+
+add_executable(test_commands
+	tests/test_commands.cpp
+)
+target_link_libraries(test_commands PRIVATE drwalin_util)

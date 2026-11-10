@@ -162,10 +162,6 @@ int32_t log_snprintf(char *buf, int32_t BYTES, log_level level, bool print_time,
 	if (file != nullptr) {
 		std::string file_path =
 			file != nullptr ? pretty_file_path(file, false) : "";
-		fprintf(stderr, "file path: `%s`\n", file);
-		fprintf(stderr, "   +--->   `%s`\n", file_path.c_str());
-		fprintf(stderr, "   with:   `%s`\n", DRWUTIL_LOG_IGNORE_COMMON_PATH);
-		fflush(stderr);
 		offset = strlen(buf);
 		snprintf(buf + offset, BYTES - offset, "%s:%i ", file_path.c_str(),
 				 line);
