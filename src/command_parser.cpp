@@ -32,6 +32,8 @@ struct istream_buf {
 };
 } // namespace
 
+namespace dutl
+{
 command_parser::command_parser() {}
 
 command_parser::~command_parser() {}
@@ -213,3 +215,4 @@ void command_parser::_internal_parse_command(const std::string_view _command)
 		LOG_ERROR("command not found: %s", s.c_str());
 	}
 }
+} // namespace dutl

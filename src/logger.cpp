@@ -108,7 +108,7 @@ void logger::init(const char *file, bool to_stderr, bool to_stdout,
 	}
 }
 
-void logger::log(log_level level, bool print_time, bool print_file,
+void logger::log(log_level level, bool print_time,
 				 const char *file, int line, const char *function,
 				 const char *fmt, ...)
 {
@@ -120,7 +120,7 @@ void logger::log(log_level level, bool print_time, bool print_file,
 	char buf[BYTES];
 	va_list va;
 	va_start(va, fmt);
-	int32_t offset = log_snprintf(buf, BYTES, level, print_time, print_file,
+	int32_t offset = log_snprintf(buf, BYTES, level, print_time,
 								  file, line, function, fmt, va);
 	va_end(va);
 

@@ -75,18 +75,22 @@ const char *log_level_to_name(log_level level)
 	switch (level) {
 	case FATAL:
 		return "F";
+	case STRONG_ASSERT:
+		return "A";
 	case LL_ERROR:
 		return "E";
 	case WARN:
 		return "W";
 	case INFO:
 		return "I";
+	case DEBUG_ASSERT:
+		return "A";
 	case DEBUG:
 		return "D";
 	case TRACE:
 		return "T";
 	default:
-		sprintf(ar[level], "%5u", (int)level);
+		sprintf(ar[level], "%3u", (int)level);
 		return ar[level];
 	}
 	return "UNDEF";
@@ -95,18 +99,22 @@ const char *log_level_to_name(log_level level)
 	switch (level) {
 	case FATAL:
 		return "FATAL";
+	case STRONG_ASSERT:
+		return "ASERT";
 	case LL_ERROR:
 		return "ERROR";
 	case WARN:
 		return "WARN ";
 	case INFO:
 		return "INFO ";
+	case DEBUG_ASSERT:
+		return "ASRTD";
 	case DEBUG:
 		return "DEBUG";
 	case TRACE:
 		return "TRACE";
 	default:
-		sprintf(ar[level], "%5u", (int)level);
+		sprintf(ar[level], "%3u", (int)level);
 		return ar[level];
 	}
 	return "UNDEF";
@@ -124,7 +132,7 @@ static thread_local uint64_t thread_id = GEN_THREAD_ID();
 static std::mutex mutex;
 
 int32_t log_snprintf(char *buf, int32_t BYTES, log_level level, bool print_time,
-					 bool print_file, const char *file, int line,
+					 const char *file, int line,
 					 const char *function, const char *fmt, va_list va)
 {
 	print_time |= enable_printing_time;
@@ -154,6 +162,10 @@ int32_t log_snprintf(char *buf, int32_t BYTES, log_level level, bool print_time,
 	if (file != nullptr) {
 		std::string file_path =
 			file != nullptr ? pretty_file_path(file, false) : "";
+		fprintf(stderr, "file path: `%s`\n", file);
+		fprintf(stderr, "   +--->   `%s`\n", file_path.c_str());
+		fprintf(stderr, "   with:   `%s`\n", DRWUTIL_LOG_IGNORE_COMMON_PATH);
+		fflush(stderr);
 		offset = strlen(buf);
 		snprintf(buf + offset, BYTES - offset, "%s:%i ", file_path.c_str(),
 				 line);
@@ -170,18 +182,18 @@ int32_t log_snprintf(char *buf, int32_t BYTES, log_level level, bool print_time,
 }
 
 int32_t log_snprintf(char *buffer, int32_t buffer_size, log_level level,
-					 bool print_time, bool print_file, const char *file,
+					 bool print_time, const char *file,
 					 int line, const char *function, const char *fmt, ...)
 {
 	va_list va;
 	va_start(va, fmt);
 	int32_t ret = log_snprintf(buffer, buffer_size, level, print_time,
-							   print_file, file, line, function, fmt, va);
+							   file, line, function, fmt, va);
 	va_end(va);
 	return ret;
 }
 
-void log(log_level level, bool print_time, bool print_file, const char *file,
+void log(log_level level, bool print_time, const char *file,
 		 int line, const char *function, const char *fmt, ...)
 {
 	if (is_log_level_applicable(level) == false) {
@@ -194,7 +206,7 @@ void log(log_level level, bool print_time, bool print_file, const char *file,
 	va_list va;
 	va_start(va, fmt);
 
-	int32_t offset = log_snprintf(buf, BYTES, level, print_time, print_file,
+	int32_t offset = log_snprintf(buf, BYTES, level, print_time,
 								  file, line, function, fmt, va);
 
 	if (offset > 0) {

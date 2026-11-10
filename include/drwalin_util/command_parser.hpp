@@ -11,6 +11,8 @@
 #include <string>
 #include <functional>
 
+namespace dutl
+{
 class command_parser
 {
 public:
@@ -51,4 +53,5 @@ private:
 
 	std::unordered_map<std::string, std::shared_ptr<command_storage>> commands;
 };
+} // namespace dutl
 #endif

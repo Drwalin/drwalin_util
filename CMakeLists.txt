@@ -10,7 +10,6 @@ option(DRWUTIL_USE_RPMALLOC "Use rpmalloc. Otherwise use object pool" ON)
 option(DRWUTIL_MEMORY_COLLECT_STATS "Enable memory statistics collection" OFF)
 option(DRWUTIL_LOG_LEVEL_SINGLE_CHARACTER "Write single character for log level" ON)
 option(DRWUTIL_LOG_USE_PRETTY_FUNCTION "Use pretty function name for log" ON)
-option(DRWUTIL_LOG_ONLY_ON_STDERR "Print logs only on STDERR without a file" OFF)
 set(DRWUTIL_LOG_DATETIME_SUBSECONDS_DIGITS 5 CACHE STRING "Number of sub-second digits in log date-time")
 set(DRWUTIL_IGNORE_COMMON_LOG_PATH ${PROJECT_SOURCE_DIR} CACHE STRING "A common path part to ignore from log")
 
@@ -19,12 +18,11 @@ add_library(drwalin_util STATIC
 	${source_files}
 )
 
-if(DRWUTIL_LOG_ONLY_ON_STDERR)
-	set_source_files_properties(src/Log.cpp PROPERTIES COMPILE_FLAGS -DDRWUTIL_LOG_ONLY_ON_STDERR=1)
-endif()
-
 if(NOT DEFINED DRWUTIL_IGNORE_COMMON_LOG_PATH)
 	target_compile_definitions(drwalin_util PUBLIC DRWUTIL_LOG_IGNORE_COMMON_PATH="${PROJECT_SOURCE_DIR}")
+else()
+	target_compile_definitions(drwalin_util PUBLIC
+		DRWUTIL_LOG_IGNORE_COMMON_PATH="${DRWUTIL_IGNORE_COMMON_LOG_PATH}")
 endif()
 
 if(NOT DEFINED DRWUTIL_LOG_DEFAULT_LOG_LEVEL)
@@ -57,3 +55,8 @@ add_executable(test_log
 	tests/test_log.cpp
 )
 target_link_libraries(test_log PRIVATE drwalin_util)
+
+add_executable(test_config
+	tests/test_config.cpp
+)
+target_link_libraries(test_config PRIVATE drwalin_util)

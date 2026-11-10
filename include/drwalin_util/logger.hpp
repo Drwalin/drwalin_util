@@ -19,13 +19,15 @@ namespace dutl
 {
 namespace log
 {
-enum log_level : unsigned int {
+enum log_level : uint8_t {
 	FATAL = 1,
-	LL_ERROR = 2,
-	WARN = 3,
-	INFO = 4,
-	DEBUG = 5,
-	TRACE = 6,
+	STRONG_ASSERT = 2,
+	LL_ERROR = 3,
+	WARN = 4,
+	INFO = 5,
+	DEBUG_ASSERT = 6,
+	DEBUG = 7,
+	TRACE = 8,
 
 	LL_IGNORE = 127
 };
@@ -55,7 +57,7 @@ struct logger {
 			  bool reset_at_midnight = true);
 	void deinit();
 
-	void log(log_level level, bool print_time, bool print_file,
+	void log(log_level level, bool print_time,
 			 const char *file, int line, const char *function, const char *fmt,
 			 ...);
 

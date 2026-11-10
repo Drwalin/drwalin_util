@@ -87,6 +87,7 @@ public:
 	void set_bool(const std::string_view key, bool value);
 	void set_string(const std::string_view key, const std::string &value);
 	void set_string(const std::string_view key, const std::string_view value);
+	void set_string(const std::string_view key, const char *value);
 	void set_integer(const std::string_view key, int64_t value);
 	void set_float(const std::string_view key, double value);
 	bool set_vec(const std::string_view key, const std::vector<float> &value);

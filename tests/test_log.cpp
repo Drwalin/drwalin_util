@@ -1,9 +1,9 @@
 
-#include <cassert>
 #include <cstdlib>
 
 #include "../include/drwalin_util/allocator.hpp"
 #include "../include/drwalin_util/log.hpp"
+#include "../include/drwalin_util/assert.hpp"
 #include "../include/drwalin_util/random.hpp"
 
 #define print_stats()                                                          \
@@ -41,7 +41,7 @@ int main()
 						 str.str, b.ns, bstr.str);
 				exit(1);
 			}
-			assert(a == b);
+			ASSERT_EXIT(a == b);
 			if (str.str[0] != '1' && str.str[0] != '2') {
 				break;
 			}

@@ -115,6 +115,13 @@ void storage::set_string(const std::string_view key,
 	strings[std::to_string(key)] = value;
 }
 
+void storage::set_string(const std::string_view key,
+						 const char *value)
+{
+	std::lock_guard<std::shared_mutex> lock(ms);
+	strings[std::to_string(key)] = value;
+}
+
 void storage::set_integer(const std::string_view key, int64_t value)
 {
 	std::lock_guard<std::shared_mutex> lock(mi);

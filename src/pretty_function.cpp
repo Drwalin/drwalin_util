@@ -3,15 +3,39 @@
 // This file is part of DrwalinUtil project under MIT License
 // You should have received a copy of the MIT License along with this program.
 
-#include "../include/drwalin_util/pretty_function.hpp"
-
 #include <shared_mutex>
 #include <unordered_map>
+
+#include "../include/drwalin_util/pretty_function.hpp"
 
 namespace dutl
 {
 namespace log
 {
+static std::string _clear_path(std::string path)
+{
+	int a = 0, b = 0;
+	for (; a < path.size();) {
+		char c = path[a];
+		if (c == '\\') {
+			c = '/';
+		}
+		path[b] = path[a];
+		if (a != 0) {
+			if (path[a - 1] == '/' && path[a] == '/') {
+				++a;
+			}
+		}
+		++a;
+		++b;
+	}
+	path.resize(b);
+	return path;
+}
+
+const std::string IGNORE_COMMON_PATH =
+	_clear_path(DRWUTIL_LOG_IGNORE_COMMON_PATH "/");
+
 const std::string &pretty_function(const char *ugly_function)
 {
 	std::string function = ugly_function;
@@ -118,22 +142,13 @@ const std::string &pretty_function(const char *ugly_function)
 	return ret;
 }
 
-inline const static std::string IGNORE_COMMON_PATH =
-	DRWUTIL_LOG_IGNORE_COMMON_PATH;
-
 std::string pretty_file_path(std::string path, bool ignore_path)
 {
+	path = _clear_path(path);
 	if (ignore_path) {
-		auto it = path.rfind("\\");
+		auto it = path.rfind("/");
 		if (it == std::string::npos) {
 			it = 0;
-		}
-		auto it2 = path.rfind("/");
-		if (it2 == std::string::npos) {
-			it2 = 0;
-		}
-		if (it < it2) {
-			it = it2;
 		}
 		if (it != 0) {
 			return path.substr(it + 1);
@@ -141,22 +156,23 @@ std::string pretty_file_path(std::string path, bool ignore_path)
 		return path;
 	} else {
 		auto pos = path.find(IGNORE_COMMON_PATH);
-		if (pos == 0) {
-			path.replace(pos, IGNORE_COMMON_PATH.size(), "");
-		}
-		while (true) {
-			auto pos = path.find("\\");
-			if (pos == std::string::npos) {
-				break;
+		// 		if (pos == 0) {
+		// 			path.replace(pos, IGNORE_COMMON_PATH.size(), "");
+		// 		}
+
+		{
+			int last_slash = 0;
+			int i = 0;
+			for (; i < path.size() && i < IGNORE_COMMON_PATH.size() &&
+				   path[i] == IGNORE_COMMON_PATH[i];
+				 ++i) {
+				if (path[i] == '/' || path[i] == '\\') {
+					last_slash = i;
+				}
 			}
-			path.replace(pos, 1, "/");
-		}
-		while (true) {
-			auto pos = path.find("//");
-			if (pos == std::string::npos) {
-				break;
+			if (i > 0 && last_slash != 0) {
+				path = path.substr(last_slash + 1);
 			}
-			path.replace(pos, 2, "/");
 		}
 
 		auto oldSize = path.size() + 1;

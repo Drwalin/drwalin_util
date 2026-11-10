@@ -17,13 +17,12 @@
 #ifndef DRWUTIL_LOG_IGNORE_COMMON_PATH
 #define DRWUTIL_LOG_IGNORE_COMMON_PATH ""
 #endif
-inline const static std::string IGNORE_COMMON_PATH =
-	DRWUTIL_LOG_IGNORE_COMMON_PATH;
-
 namespace dutl
 {
 namespace log
 {
+extern const std::string IGNORE_COMMON_PATH;
+
 const std::string &pretty_function(const char *ugly_function);
 std::string pretty_file_path(std::string path, bool ignore_path);
 } // namespace log
