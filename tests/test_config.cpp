@@ -47,7 +47,7 @@ int main()
 
 	dutl::log::print_line_sync("Success");
 
-	if (ASSERT_COND(!"this prooves asserts work") == false) {
+	if (ASSERT_COND(!"this prooves asserts work")) {
 		LOG_FATAL("Assert does not work");
 		exit(1);
 	}

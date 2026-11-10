@@ -52,10 +52,14 @@ void set_vec(std::string key, std::vector<float> value)
 		std::string key1 = key_base + std::to_string(++counter);               \
 		std::string key2 = key_base + std::to_string(++counter);               \
 		std::string key3 = key_base + std::to_string(++counter);               \
+		TYPE v = V2;                                                           \
+		ASSERT_EXIT(config.METHOD_GET(key1, &v) == false);                     \
+		ASSERT_EXIT(config.METHOD_GET(key2, &v) == false);                     \
+                                                                               \
 		METHOD_SET(key1, V1);                                                  \
 		METHOD_SET(key2, V2);                                                  \
                                                                                \
-		TYPE v = V2;                                                           \
+		v = V2;                                                                \
 		ASSERT_EXIT(config.METHOD_GET(key1, &v) == true);                      \
 		ASSERT_EXIT(v == V1);                                                  \
 		v = V1;                                                                \
@@ -69,18 +73,6 @@ int main()
 	config.initialise_commands(&parser);
 	int counter = 0;
 
-	config.set_bool("flag1", true);
-	config.set_bool("flag2", false);
-
-	bool vb = false;
-	ASSERT_EXIT(config.get_bool("flag1", &vb) == true);
-	ASSERT_EXIT(vb == true);
-	vb = true;
-	ASSERT_EXIT(config.get_bool("flag2", &vb) == true);
-	ASSERT_EXIT(vb == false);
-	vb = true;
-	ASSERT_EXIT(config.get_bool("flag3", &vb) == false);
-
 	TEST(set_string, get_string, std::string, "asdffdfs", "_fghj");
 	TEST(set_bool, get_bool, bool, true, false);
 	TEST(set_int, get_integer, int64_t, 13, 17);
@@ -92,7 +84,7 @@ int main()
 
 	dutl::log::print_line_sync("Success");
 
-	if (ASSERT_COND(!"this prooves asserts work") == false) {
+	if (ASSERT_COND(!"this prooves asserts work")) {
 		LOG_FATAL("Assert does not work");
 		exit(1);
 	}
