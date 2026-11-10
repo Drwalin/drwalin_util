@@ -5,9 +5,9 @@
 
 #include <fstream>
 
-#include "../include/drwutil/log.hpp"
-#include "../include/drwutil/string_util.hpp" // IWYU pragma: keep
-#include "../include/drwutil/command_parser.hpp"
+#include "../include/drwalin_util/log.hpp"
+#include "../include/drwalin_util/string_util.hpp" // IWYU pragma: keep
+#include "../include/drwalin_util/command_parser.hpp"
 
 void command_parser::initialize_commands()
 {

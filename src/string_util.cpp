@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 
-#include "../include/drwutil/string_util.hpp"
+#include "../include/drwalin_util/string_util.hpp"
 
 namespace std
 {

@@ -6,13 +6,13 @@
 #include <cassert>
 
 #if DRWUTIL_USE_RPMALLOC
-#include "../include/drwutil/log.hpp"
+#include "../include/drwalin_util/log.hpp"
 #include "../rpmalloc/rpmalloc/rpmalloc.h"
 #else
 #include <cstdlib>
 #endif
 
-#include "../include/drwutil/allocator.hpp"
+#include "../include/drwalin_util/allocator.hpp"
 
 namespace dutl
 {

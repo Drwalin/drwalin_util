@@ -9,9 +9,9 @@
 
 #include <mutex>
 
-#include "../include/drwutil/time.hpp"
-#include "../include/drwutil/pretty_function.hpp"
-#include "../include/drwutil/log.hpp"
+#include "../include/drwalin_util/time.hpp"
+#include "../include/drwalin_util/pretty_function.hpp"
+#include "../include/drwalin_util/log.hpp"
 
 #ifdef __unix__
 #include <sys/syscall.h>

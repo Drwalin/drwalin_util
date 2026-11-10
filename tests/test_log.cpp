@@ -2,9 +2,9 @@
 #include <cassert>
 #include <cstdlib>
 
-#include "../include/drwutil/allocator.hpp"
-#include "../include/drwutil/log.hpp"
-#include "../include/drwutil/random.hpp"
+#include "../include/drwalin_util/allocator.hpp"
+#include "../include/drwalin_util/log.hpp"
+#include "../include/drwalin_util/random.hpp"
 
 #define print_stats()                                                          \
 	({                                                                         \

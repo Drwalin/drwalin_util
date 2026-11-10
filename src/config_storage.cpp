@@ -10,10 +10,10 @@
 #include <mutex>
 #include <sstream>
 
-#include "../include/drwutil/log.hpp"
-#include "../include/drwutil/string_util.hpp"
-#include "../include/drwutil/command_parser.hpp"
-#include "../include/drwutil/config_storage.hpp"
+#include "../include/drwalin_util/log.hpp"
+#include "../include/drwalin_util/string_util.hpp"
+#include "../include/drwalin_util/command_parser.hpp"
+#include "../include/drwalin_util/config_storage.hpp"
 
 config_storage::config_storage() {}
 

@@ -8,7 +8,7 @@
 #include <random>
 #include <mutex>
 
-#include "../include/drwutil/random.hpp"
+#include "../include/drwalin_util/random.hpp"
 
 namespace dutl
 {

@@ -8,10 +8,10 @@
 
 #include <mutex>
 
-#include "../include/drwutil/time.hpp"
-#include "../include/drwutil/log.hpp"
-#include "../include/drwutil/log_rotate.hpp"
-#include "../include/drwutil/logger.hpp"
+#include "../include/drwalin_util/time.hpp"
+#include "../include/drwalin_util/log.hpp"
+#include "../include/drwalin_util/log_rotate.hpp"
+#include "../include/drwalin_util/logger.hpp"
 
 namespace dutl
 {

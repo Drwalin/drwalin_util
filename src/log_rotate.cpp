@@ -3,7 +3,7 @@
 // This file is part of DrwalinUtil project under MIT License
 // You should have received a copy of the MIT License along with this program.
 
-#include "../include/drwutil/log_rotate.hpp"
+#include "../include/drwalin_util/log_rotate.hpp"
 
 namespace dutl
 {

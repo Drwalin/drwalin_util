@@ -7,7 +7,7 @@
 
 #include <new>
 
-#include "../include/drwutil/allocator.hpp"
+#include "../include/drwalin_util/allocator.hpp"
 
 extern void operator delete(void *p) noexcept { dutl::alloc::release(p, 0); }
 

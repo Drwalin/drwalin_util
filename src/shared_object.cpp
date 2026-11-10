@@ -3,7 +3,7 @@
 // This file is part of DrwalinUtil project under MIT License
 // You should have received a copy of the MIT License along with this program.
 
-#include "../include/drwutil/shared_object.hpp"
+#include "../include/drwalin_util/shared_object.hpp"
 
 #if defined __WIN32__ || defined _WIN64 || defined _WIN32
 #include <windows.h>
