@@ -25,10 +25,7 @@ std::string replace_all(const std::string &str, const std::string &src,
 						const std::string &dst);
 
 std::string to_string(std::string_view sv);
-
-inline std::string_view to_sv(const std::string &s) {
-	return std::string(s.data(), s.size());
-}
+std::string_view to_sv(const std::string &s);
 
 // return false if failed, modifies str to start after read value
 bool read(string_view &str, int32_t &value);

@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(DRWUTIL_USE_RPMALLOC "Use rpmalloc. Otherwise use object pool" ON)
-option(DRWUTIL_MEMORY_COLLECT_STATS "Enable memory statistics collection" OFF)
+option(DRWUTIL_MEMORY_COLLECT_STATS "Enable memory statistics collection" ON)
 option(DRWUTIL_LOG_LEVEL_SINGLE_CHARACTER "Write single character for log level" ON)
 option(DRWUTIL_LOG_USE_PRETTY_FUNCTION "Use pretty function name for log" ON)
 set(DRWUTIL_LOG_DATETIME_SUBSECONDS_DIGITS 5 CACHE STRING "Number of sub-second digits in log date-time")

@@ -103,6 +103,10 @@ std::string to_string(std::string_view sv)
 	return std::string(sv.data(), sv.data()+sv.size());
 }
 
+std::string_view to_sv(const std::string &s) {
+	return std::string_view(s.data(), s.size());
+}
+
 template<typename T>
 inline bool read_typed(string_view &str, T &value)
 {

@@ -38,13 +38,17 @@ allocated_object<void> allocate(size_t bytes)
 		bytes = _bytes;
 	}
 
+#ifdef DRWUTIL_MEMORY_COLLECT_STATS
 	_stats.collect_single_allocation(_bytes);
+#endif
 
 	return {ptr, _bytes};
 #else
 	void *ptr = malloc(bytes);
 
+#ifdef DRWUTIL_MEMORY_COLLECT_STATS
 	_stats.collect_single_allocation(bytes);
+#endif
 
 	assert((((uint64_t)ptr) & 0xF) == 0);
 
@@ -62,7 +66,9 @@ void release(void *ptr, size_t bytes)
 #else
 	free(ptr);
 #endif
+#ifdef DRWUTIL_MEMORY_COLLECT_STATS
 	_stats.collect_single_deallocation(bytes);
+#endif
 }
 
 memory_stats &stats() { return _stats; }
