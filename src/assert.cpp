@@ -3,6 +3,7 @@
 // This file is part of DrwalinUtil project under MIT License
 // You should have received a copy of the MIT License along with this program.
 
+#include <cassert>
 #include <cstdlib>
 
 #include "../include/drwalin_util/log.hpp"
@@ -36,6 +37,7 @@ bool assert_impl2(assert_strength strength, bool condition,
 	log::log(level, true, file, line, function, "Assert condition `%s` failed",
 			 condition_text);
 
+	assert(false);
 	if (strength == EXIT_ON_FAIL) {
 		exit(1);
 	}
